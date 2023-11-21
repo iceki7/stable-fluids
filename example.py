@@ -4,11 +4,11 @@ from scipy.special import erf
 
 from fluid import Fluid
 
-RESOLUTION = 500, 500
+RESOLUTION = 500, 500 #prm
 DURATION = 200
 
 INFLOW_PADDING = 50
-INFLOW_DURATION = 60
+INFLOW_DURATION = 120 #prm
 INFLOW_RADIUS = 8
 INFLOW_VELOCITY = 1
 INFLOW_COUNT = 5
@@ -35,9 +35,10 @@ frames = []
 for f in range(DURATION):
     print(f'Computing frame {f + 1} of {DURATION}.')
     if f <= INFLOW_DURATION:
-        fluid.velocity += inflow_velocity
+        fluid.velocity += inflow_velocity 
+        #z body force
         fluid.dye += inflow_dye
-
+    #z visualize the curl of vel
     curl = fluid.step()[1]
     # Using the error function to make the contrast a bit higher. 
     # Any other sigmoid function e.g. smoothstep would work.
@@ -48,4 +49,8 @@ for f in range(DURATION):
     frames.append(Image.fromarray(color, mode='HSV').convert('RGB'))
 
 print('Saving simulation result.')
-frames[0].save('example.gif', save_all=True, append_images=frames[1:], duration=20, loop=0)
+if(fluid.bvis):
+    filename='example-vis'#prm
+else:
+    filename='example'
+frames[0].save(filename+'.gif', save_all=True, append_images=frames[1:], duration=20, loop=0)
